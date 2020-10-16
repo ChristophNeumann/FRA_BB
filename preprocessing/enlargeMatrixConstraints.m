@@ -1,7 +1,8 @@
 function [ enlargedModel ] = enlargeMatrixConstraints( model )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-eps = 10^-8;
+epsRound = 10^-8;
+epsEnlargement = 10^-4;
 %assert(sum(model.vtype=='I')+sum(model.vtype=='C') == length(model.obj));
 enlargedModel = model;
 A = model.A(:,model.vtype=='C');
@@ -9,7 +10,7 @@ B = model.A(:,model.vtype=='I');
 
 %Due to memory reasons, the integegrality of B has to be tested separately
 %rows with nonzero elements of B-floor(B) cannot be relaxed
-I_enlarged = ~any(A,2) & ~any(abs(B-round(B))>eps,2)& ...
+I_enlarged = ~any(A,2) & ~any(abs(B-round(B))>epsRound,2)& ...
              ~isinf(enlargedModel.rhs);
 B_l = round(B(I_enlarged,:));
 enlargedModel.A(I_enlarged,model.vtype=='I') = B_l;
@@ -30,6 +31,6 @@ if toc >=20
 end
 fprintf('maximum enlargement: %i \n',max(k))
 enlargedModel.rhs(I_enlarged) = model.rhs(I_enlarged)...
-                               - mod(model.rhs(I_enlarged),k) + k - eps;
+                               - mod(model.rhs(I_enlarged),k) + k - epsEnlargement;
 end
 

@@ -1,13 +1,10 @@
-function gurobiOutput = optimalityDiving(modelT,originalModel)
+function gurobiOutput = optimalityDiving(resultT,originalModel)
 %OPTIMALITYDIVING Summary of this function goes here
 %   Detailed explanation goes here
-xycheck = getRounding(modelT.x,originalModel);
-%i = getFixingIndex(modelT.x, xycheck,originalModel;
-i=1;
-for i=1:10
-    reducedModel = buildFixedModel(originalModel,j,xycheck(j));
-    currentIPSSolution = MinOverT(reducedModel);    
-end
-
+xycheck = getRounding(resultT.x,originalModel);
+activeConstraints = (resultT.slack ==0);
+boolVectFixedVars = getFixingVector(resultT.x, xycheck,originalModel,activeConstraints);
+reducedModel = buildFixedModel(originalModel,boolVectFixedVars,xycheck);
+gurobiOutput = MinOverT(reducedModel);   
 end
 

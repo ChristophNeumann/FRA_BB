@@ -17,7 +17,7 @@ enlargedModel.A(I_enlarged,model.vtype=='I') = B_l;
 %[I,~] = find(B_l-floor(spfun(@(x) x+eps,B_l))>eps);
 %[I,~] = find(any(B-floor(spfun(@(x) x+eps,B))~=0,2) & ~any(A,2),2);
 %fprintf('Number of non integral rows in B_l: %i \n', length(I));
-fprintf('Number of constraints that may be relaxed: %i \n', sum(full(I_enlarged)));
+%fprintf('Number of constraints that may be relaxed: %i \n', sum(full(I_enlarged)));
 k = ones(sum(I_enlarged),1);
 i=1;
 tic;
@@ -29,7 +29,7 @@ end
 if toc >=20 
     fprintf('Could not enlarge problem fully');
 end
-fprintf('maximum enlargement: %i \n',max(k))
+%fprintf('maximum enlargement: %i \n',max(k))
 enlargedModel.rhs(I_enlarged) = model.rhs(I_enlarged)...
                                - mod(model.rhs(I_enlarged),k) + k - epsEnlargement;
 end

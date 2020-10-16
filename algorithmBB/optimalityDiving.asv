@@ -3,11 +3,10 @@ function gurobiOutput = optimalityDiving(resultT,originalModel)
 %   Detailed explanation goes here
 xycheck = getRounding(resultT.x,originalModel);
 activeConstraints = (resultT.slack ==0);
-objMeasure = objectiveMeasure(originalModel,resultT.x);
 %boolVectFixedVars = getFixingVector(resultT.x, xycheck,originalModel,activeConstraints);
 for i=1:3
     boolVectFixedVars = indicesToBooleanVector(i,originalModel);
-    fprintf('fixing variable %i to %i \n',i,xycheck(i));
+    fprintf('fixing variable %i to %i \n',(i,xycheck(i)));
     reducedModel = buildFixedModel(originalModel,boolVectFixedVars,xycheck);
     gurobiOutput = MinOverT(reducedModel);   
 end

@@ -1,4 +1,4 @@
-model.obj = [-1,0,-4];
+model.obj = [-1,0,-3];
 model.A = sparse([1,1,2;-2,-2,+1]);
 model.lb = repelem(0,3);
 model.ub = repelem(2,3);

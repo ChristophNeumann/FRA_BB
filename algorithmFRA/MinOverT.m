@@ -13,5 +13,5 @@ modelT.vtype = repelem('C',length(model.obj));
 modelT.rhs = modelT.rhs-0.5*beta;
 params.outputflag = 0;
 minT = gurobi(modelT, params);
-fprintf('Optimal objective value of fixing is %f\n',minT.objval);
+fprintf('Optimal objective value over the IPS is %f\n',minT.objval);
 end

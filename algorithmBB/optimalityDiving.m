@@ -4,6 +4,7 @@ function gurobiOutput = optimalityDiving(resultT,originalModel)
 xycheck = getRounding(resultT.x,originalModel);
 activeConstraints = (resultT.slack ==0);
 objMeasure = objectiveMeasure(originalModel,resultT.x);
+fprintf('Optimal objective value over the IPS is %f\n',resultT.objval);
 %boolVectFixedVars = getFixingVector(resultT.x, xycheck,originalModel,activeConstraints);
 for i=1:3
     boolVectFixedVars = indicesToBooleanVector(i,originalModel);

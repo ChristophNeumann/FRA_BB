@@ -17,6 +17,7 @@ modelT.A = [modelT.A,zeros(size(modelT.A,1),1)];
 modelT.A(model.sense=='<',end) =-ones(size(modelT.A(model.sense=='<'),1),1);
 modelT.obj = [repelem(0,length(modelT.obj)),1];
 modelT.varnames{end+1} = 'fvar';
+modelT.objcon = 0;
 params.outputflag = 0;
 minFP = gurobi(modelT, params);
 

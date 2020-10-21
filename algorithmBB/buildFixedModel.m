@@ -6,6 +6,7 @@ function fixedModel = buildFixedModel(originalModel,fixedVariables, xyCheck)
     fixedModel.A = originalModel.A(:,~fixedVariables);
     fixedModel.sense = originalModel.sense;
     fixedModel.rhs = originalModel.rhs - originalModel.A(:,fixedVariables)*xyCheck(fixedVariables);  
-    fixedModel.objcon = originalModel.obj(fixedVariables)*xyCheck(fixedVariables);
-    fprintf('objective difference is %f \n',fixedModel.objcon);
+%    fixedModel.objcon = originalModel.obj(fixedVariables)*xyCheck(fixedVariables);
+    fixedModel.varnames = originalModel.varnames(~fixedVariables);
+%    fprintf('objective difference is %f \n',fixedModel.objcon);
 end

@@ -4,11 +4,11 @@ pathname2 = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection\';
 addpath(pathname);
 addpath(pathname2);
 testinstances = dir(strcat(pathname,'/*.mps'));
-%testinstances = textread(nameOfTextFileWithTestInstances, "%s"); 
+testinstances = textread('testset.txt', "%s"); 
 result = [];
 for i = 1:length(testinstances) 
     fprintf('iteration %i\n',i);
-    current_name = testinstances(i).name;% testinstances{i};
+    current_name = testinstances{i}; %testinstances(i).name;% 
     path1 = strcat(pathname,current_name);%,'.mps'
     path2 = strcat(pathname2,current_name);%,'.mps'
     if isfile(path1)

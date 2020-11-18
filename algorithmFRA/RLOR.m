@@ -16,7 +16,9 @@ modelT.A = [modelT.A,zeros(size(modelT.A,1),1)];
 % Only introduce alpha for inequality constraints.
 modelT.A(model.sense=='<',end) =-ones(size(modelT.A(model.sense=='<'),1),1);
 modelT.obj = [repelem(0,length(modelT.obj)),1];
-modelT.varnames{end+1} = 'fvar';
+if isfield(modelT,'varnames')
+    modelT.varnames{end+1} = 'fvar';
+end
 modelT.objcon = 0;
 params.outputflag = 0;
 minFP = gurobi(modelT, params);

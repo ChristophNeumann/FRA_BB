@@ -7,6 +7,8 @@ function fixedModel = buildFixedModel(originalModel,fixedVariables, xyCheck)
     fixedModel.sense = originalModel.sense;
     fixedModel.rhs = originalModel.rhs - originalModel.A(:,fixedVariables)*xyCheck(fixedVariables);  
 %    fixedModel.objcon = originalModel.obj(fixedVariables)*xyCheck(fixedVariables);
+    if isfield(fixedModel,'varnames')
     fixedModel.varnames = originalModel.varnames(~fixedVariables);
+    end
 %    fprintf('objective difference is %f \n',fixedModel.objcon);
 end

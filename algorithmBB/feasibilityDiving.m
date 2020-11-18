@@ -10,7 +10,7 @@ fixedValues = [];
 fixedIndices = [];
 m = sum((reducedModel.vtype)=='I');
 mn = length(reducedModel.vtype);
-k = floor(m/maxIter);
+k = floor(m/maxIter) + 1; %+1?
 i = 0;
 indexMap = 1:mn;
 xyFeasible = nan;

@@ -1,7 +1,7 @@
-function [xyFeasible, fixedIndices, fixedValues] = feasibilityDiving(originalModel)
+function [xyFeasible, fixedIndices, fixedValues, alpha] = feasibilityDiving(originalModel,mode)
 %OPTIMALITYDIVING Summary of this function goes here
 %   Detailed explanation goes here
-maxIter = 20;
+maxIter = 30;
 reducedModel = preProcessModel(originalModel);
 resultRLOR = RLOR(reducedModel);
 alpha = resultRLOR.objval;
@@ -10,11 +10,12 @@ fixedValues = [];
 fixedIndices = [];
 m = sum((reducedModel.vtype)=='I');
 mn = length(reducedModel.vtype);
-k = floor(m/maxIter) + 1; %+1?
+k = floor(m/maxIter-(10^-4)) + 1; %+1?
 i = 0;
 indexMap = 1:mn;
 xyFeasible = nan;
-while alpha>0 && i<maxIter
+yCheck = zeros(m,1);
+while alpha>0 && length(yCheck)>k %&& i<maxIter 
     xycheck = getRounding(resultRLOR.x(1:end-1),reducedModel);
     xyCandidate = inflateReducedPoint(xycheck,fixedIndices,fixedValues);
     if isfeasible(xyCandidate,originalModel)
@@ -26,7 +27,16 @@ while alpha>0 && i<maxIter
     yCheck = xycheck(feasModelVType=='I');
     assert(length(yCheck)==length(y));
     activeConstraints = (resultRLOR.slack ==0);
-    boolVectFixedVars = getFixingVectorMaxConstrs(y, yCheck,reducedModel,activeConstraints,k);
+    if strcmp(mode,'MC')
+        fprintf('Running in fixing mode MC \n');
+        boolVectFixedVars = getFixingVectorMaxConstrs(y, yCheck,reducedModel,activeConstraints,k);
+    elseif strcmp(mode,'RANDOM')
+    boolVectFixedVars = getRandomFixingVector(yCheck, reducedModel,k);
+    else
+        fprintf('Running in fixing max-ratio mode\n');
+        boolVectFixedVars = getFixingVector(y, yCheck,reducedModel,activeConstraints,k);
+    end
+    
     numberOfFixings = length(indexMap(boolVectFixedVars));
     fixedIndices = [fixedIndices;reshape(indexMap(boolVectFixedVars),[numberOfFixings,1])];
     fixedValues = [fixedValues;xycheck(boolVectFixedVars)];
@@ -35,7 +45,6 @@ while alpha>0 && i<maxIter
     resultRLOR = RLOR(reducedModel);  
     alpha = resultRLOR.objval;
     fprintf('current alpha value is: %i\n',alpha);
-
     i = i + 1;
 end
 if alpha == 0

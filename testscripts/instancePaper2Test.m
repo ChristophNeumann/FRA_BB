@@ -5,4 +5,4 @@ model.ub = transpose(repelem(1,3));
 model.rhs = [2;-1;1];
 model.vtype = repelem('I',3);
 model.sense = transpose(repelem('<',3));
-feasibilityDiving(model);
+feasibilityDiving(model, 'MC');

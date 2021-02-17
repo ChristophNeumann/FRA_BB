@@ -1,0 +1,36 @@
+function [xyMinimal, depth, v_check] = optimalityDiving(resultT,originalModel)
+%OPTIMALITYDIVING Summary of this function goes here
+%   Detailed explanation goes here
+maxIter = 30;
+preprocessedModel = preProcessModel(originalModel);
+xycheck = getRounding(resultT.x,originalModel);
+v_check = transpose(xycheck)*originalModel.obj;
+fixedValues = [];
+fixedIndices = [];
+m = sum((preprocessedModel.vtype)=='I');
+mn = length(preprocessedModel.vtype);
+k = floor(m/maxIter-(10^-4)) + 1; 
+i = 0;
+indexMap = 1:mn;
+xyMinimal = nan;
+yCheck = zeros(m,1);
+activeConstraints = (resultT.slack ==0);
+objMeasure = objectiveMeasure(originalModel,resultT.x);
+fprintf('Optimal objective value over the IPS is %f\n',resultT.objval);
+%boolVectFixedVars = getFixingVector(resultT.x, xycheck,originalModel,activeConstraints);
+while length(yCheck)>k
+    xy_s = inflateReducedPoint(xycheck,fixedIndices,fixedValues);
+    boolVectFixedVars = indicesToBooleanVector(i,originalModel);
+    v_check_k = transpose(xy_s)*originalModel.obj;
+    if v_check_k< v_check
+        xyMinimal = xy_s;
+        depth = len(fixedIndices)
+        fprintf('Updating v_check from %.2f to %.2f',[v_check,v_check_k]);        
+    end
+    preprocessedModel = buildFixedModel(originalModel,boolVectFixedVars,xycheck);
+    gurobiOutput = MinOverT(preprocessedModel);   
+    xy_s = getRounding(resultT.x,originalModel);
+    
+end
+end
+

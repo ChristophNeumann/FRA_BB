@@ -1,19 +1,30 @@
-function [xyMinimal, depth, v_check,v_s] = optimalityDiving(originalModel, mode)
+function [xyMinimal, depth, v_check,v_s] = optimalityDiving(originalModel, mode, fI, fV)
 %OPTIMALITYDIVING Summary of this function goes here
 %   Detailed explanation goes here
+switch nargin
+    case 4
+        fixedValues = fV;
+        fixedIndices = fI;
+        numberOfFixings = length(fI);
+        boolVectFixedVars = indicesToBooleanVector(fixedIndices,originalModel);
+        reducedModel = buildFixedModel(originalModel,boolVectFixedVars,fixedValues);         
+    case 2
+        fixedValues = [];
+        fixedIndices = [];
+        numberOfFixings = 0;
+        reducedModel = preProcessModel(originalModel);
+    otherwise
+        fprintf('inputargs must be either 2 or 4.');
+end
+        
 maxIter = 30;
-reducedModel = preProcessModel(originalModel);
 v_check = inf;
-fixedValues = [];
-fixedIndices = [];
 m = sum((reducedModel.vtype)=='I');
 mn = length(reducedModel.vtype);
 k = floor(m/maxIter-(10^-4)) + 1; 
-numberOfFixings = 0;
 indexMap = 1:mn;
 xyMinimal = nan;
 yCheck = zeros(m,1);
-%boolVectFixedVars = getFixingVector(resultT.x, xycheck,originalModel,activeConstraints);
 while length(yCheck)>k
     resultSOR = MinOverT(reducedModel); 
     v_sk = transpose(inflateReducedPoint(resultSOR.x,fixedIndices,fixedValues))*originalModel.obj;
@@ -44,12 +55,11 @@ while length(yCheck)>k
     else 
         boolVectFixedVars = getFixingVectorObjInfluence(y,yCheck, reducedModel,k);
     end
- 
     numberOfFixings = length(indexMap(boolVectFixedVars));
     fixedIndices = [fixedIndices;reshape(indexMap(boolVectFixedVars),[numberOfFixings,1])];
     fixedValues = [fixedValues;xy_s_red(boolVectFixedVars)];
     indexMap = setdiff(1:mn,fixedIndices);
-    reducedModel = buildFixedModel(reducedModel,boolVectFixedVars,xy_s_red);    
+    reducedModel = buildFixedModel(reducedModel,boolVectFixedVars,xy_s_red(boolVectFixedVars));    
 end
 end
 

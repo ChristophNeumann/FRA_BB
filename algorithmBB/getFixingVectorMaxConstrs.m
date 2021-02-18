@@ -18,7 +18,7 @@ for i=1:k
     else
         freedom_matrix = B*spdiags(remainder(:),0,n,n) + 1/2*abs(B);
         freedomMeasureRemainingInstances = vecnorm(freedom_matrix,1,1);
-        freedomMeasureRemainingInstances(index(1:i-1)) = 0; 
+        freedomMeasureRemainingInstances(index(1:i-1)) = -1; %Ensures that already fixed indices are ruled out.
         [values2,index2] = maxk(freedomMeasureRemainingInstances, min(k,n)-sum(index~=0)+1);
         ub_index = min(k,n);
         index(i:ub_index)=index2;

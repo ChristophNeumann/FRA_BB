@@ -41,7 +41,7 @@ while alpha>0 && length(yCheck)>k %&& i<maxIter
     fixedIndices = [fixedIndices;reshape(indexMap(boolVectFixedVars),[numberOfFixings,1])];
     fixedValues = [fixedValues;xycheck(boolVectFixedVars)];
     indexMap = setdiff(1:mn,fixedIndices);
-    reducedModel = buildFixedModel(reducedModel,boolVectFixedVars,xycheck);
+    reducedModel = buildFixedModel(reducedModel,boolVectFixedVars,xycheck(boolVectFixedVars));
     resultRLOR = RLOR(reducedModel);  
     alpha = resultRLOR.objval;
     fprintf('current alpha value is: %i\n',alpha);

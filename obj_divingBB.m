@@ -5,10 +5,9 @@ addpath(pathname);
 addpath(pathname2);
 testinstances = dir(strcat(pathname2,'/*.mps'));
 %testinstances = textread('testset.txt', "%s"); 
-mode = {'default','MC','RANDOM','MR'};
-for j = 2:4
+mode = {'MC','RANDOM'};
+for j = 1:2
     current_mode = mode{j};
-%    current_mode = 'MC';
     result = [];
     for i = 1:length(testinstances)
         fprintf('iteration %i\n',i);
@@ -24,8 +23,7 @@ for j = 2:4
         currentmodel = preProcessModel(currentmodel);
         if~(containsEqualitiesOnInt(currentmodel))
             current_result = struct;
-            current_result.name = current_name;
-            
+            current_result.name = current_name;            
             resultSOR = MinOverT(currentmodel); 
             v_0 = resultSOR.objval;
             xy_s = getRounding(resultSOR.x,currentmodel);

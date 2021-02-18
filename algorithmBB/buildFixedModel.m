@@ -1,11 +1,11 @@
-function fixedModel = buildFixedModel(originalModel,fixedVariables, xyCheck)
+function fixedModel = buildFixedModel(originalModel,fixedVariables, fixedValues)
     fixedModel.vtype = originalModel.vtype(~fixedVariables);
     fixedModel.ub = originalModel.ub(~fixedVariables);
     fixedModel.lb = originalModel.lb(~fixedVariables);
     fixedModel.obj = originalModel.obj(~fixedVariables);
     fixedModel.A = originalModel.A(:,~fixedVariables);
     fixedModel.sense = originalModel.sense;
-    fixedModel.rhs = originalModel.rhs - originalModel.A(:,fixedVariables)*xyCheck(fixedVariables);  
+    fixedModel.rhs = originalModel.rhs - originalModel.A(:,fixedVariables)*fixedValues;  
 %    fixedModel.objcon = originalModel.obj(fixedVariables)*xyCheck(fixedVariables);
     if isfield(fixedModel,'varnames')
     fixedModel.varnames = originalModel.varnames(~fixedVariables);

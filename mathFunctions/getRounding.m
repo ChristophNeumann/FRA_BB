@@ -10,7 +10,7 @@ yHat = x(yVars);
 ind_ambiguous = abs(yHat-floor(yHat)-0.5)<1E-12;
 d = model.obj(yVars);
 if(any(ind_ambiguous))
-    fprintf('rounding %i indices to the better objective value\n',sum(ind_ambiguous));
+%    fprintf('rounding %i indices to the better objective value\n',sum(ind_ambiguous));
     yHat(ind_ambiguous)= (-0.1*sign(d(ind_ambiguous)))+yHat(ind_ambiguous);
 end
 yCheck = round(yHat);

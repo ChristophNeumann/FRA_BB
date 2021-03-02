@@ -1,4 +1,4 @@
-function [xyMinimal, depth, v_check,v_s] = optimalityDiving(originalModel, mode, fI, fV)
+function [xyMinimal, depth, v_check,v_s, sumSuffCond, time] = optimalityDiving(originalModel, mode, fI, fV)
 %OPTIMALITYDIVING Summary of this function goes here
 %   Detailed explanation goes here
 switch nargin
@@ -6,27 +6,48 @@ switch nargin
         fixedValues = fV;
         fixedIndices = fI;
         numberOfFixings = length(fI);
-        boolVectFixedVars = indicesToBooleanVector(fixedIndices,originalModel);
-        reducedModel = buildFixedModel(originalModel,boolVectFixedVars,fixedValues);         
+        if numberOfFixings>0
+            fprintf('Optimality Diving from depth %i.\n',numberOfFixings);
+            boolVectFixedIndices = indicesToBooleanVector(fixedIndices,originalModel,false);
+            [~,order] = sort(fixedIndices);
+            sortedFixingValues = fV(order);
+            reducedModel = buildFixedModel(originalModel,boolVectFixedIndices,sortedFixingValues);
+            mn = length(originalModel.vtype);
+            indexMap = setdiff(1:mn,fixedIndices);
+        else
+            fprintf('Optimality Diving from root node.\n');
+            numberOfFixings = 0;
+            fixedValues = [];
+            fixedIndices = []; 
+            reducedModel = preProcessModel(originalModel);
+            fprintf('Optimality Diving from root node.\n');
+            mn = length(originalModel.vtype);
+            indexMap = 1:mn;
+        end
     case 2
-        fixedValues = [];
-        fixedIndices = [];
         numberOfFixings = 0;
+        fixedValues = [];
+        fixedIndices = []; 
         reducedModel = preProcessModel(originalModel);
+        fprintf('Optimality Diving from root node.\n');
+        mn = length(originalModel.vtype);
+        indexMap = 1:mn;
     otherwise
-        fprintf('inputargs must be either 2 or 4.');
+        fprintf('inputargs must be either 2 or 4.\n');
 end
-        
+
 maxIter = 30;
 v_check = inf;
-m = sum((reducedModel.vtype)=='I');
-mn = length(reducedModel.vtype);
-k = floor(m/maxIter-(10^-4)) + 1; 
-indexMap = 1:mn;
+sumSuffCond = 0;
+m_red = sum((reducedModel.vtype)=='I');
+k = floor(m_red/maxIter-(10^-4)) + 1; 
 xyMinimal = nan;
-yCheck = zeros(m,1);
-while length(yCheck)>k
+yCheck = zeros(m_red,1);
+time = 0;
+randStream = RandStream('mt19937ar'); 
+while length(yCheck)>=k 
     resultSOR = MinOverT(reducedModel); 
+    time = time + resultSOR.runtime;
     v_sk = transpose(inflateReducedPoint(resultSOR.x,fixedIndices,fixedValues))*originalModel.obj;
     fprintf('v^s is %.2f \n',v_sk);
     xy_s_red = getRounding(resultSOR.x,reducedModel);
@@ -41,16 +62,18 @@ while length(yCheck)>k
         v_s = v_sk;        
     end 
     y = resultSOR.x(reducedModel.vtype=='I');
+    if k==0 || isempty(y)
+        break; 
+    end
     yCheck = xy_s_red(reducedModel.vtype=='I');
     assert(length(yCheck)==length(y));
     activeConstraints = (resultSOR.slack ==0);
     if strcmp(mode,'MC')
-        fprintf('Running in fixing mode MC \n');
-        boolVectFixedVars = getFixingVectorMaxConstrs(y, yCheck,reducedModel,activeConstraints,k);
+        [boolVectFixedVars, sumSuffCond_k] = getFixingVectorMaxConstrs(y, yCheck,reducedModel,activeConstraints,k);
+        sumSuffCond = sumSuffCond + sumSuffCond_k;
     elseif strcmp(mode,'RANDOM')
-        boolVectFixedVars = getRandomFixingVector(yCheck, reducedModel,k);
+        boolVectFixedVars = getRandomFixingVector(yCheck, reducedModel,k,randStream);
     elseif strcmp(mode,'MR')
-        fprintf('Running in fixing max-ratio mode\n');
         boolVectFixedVars = getFixingVector(y, yCheck,reducedModel,activeConstraints,k);
     else 
         boolVectFixedVars = getFixingVectorObjInfluence(y,yCheck, reducedModel,k);
@@ -59,6 +82,7 @@ while length(yCheck)>k
     fixedIndices = [fixedIndices;reshape(indexMap(boolVectFixedVars),[numberOfFixings,1])];
     fixedValues = [fixedValues;xy_s_red(boolVectFixedVars)];
     indexMap = setdiff(1:mn,fixedIndices);
+    assert(length(fixedIndices) == length(unique(fixedIndices)))
     reducedModel = buildFixedModel(reducedModel,boolVectFixedVars,xy_s_red(boolVectFixedVars));    
 end
 end

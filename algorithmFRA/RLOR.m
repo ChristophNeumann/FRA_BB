@@ -8,7 +8,7 @@ assert(all(beta(model.sense=='=')==0));
 modelT = getEnlargedModel(model);
 assert(sum(modelT.vtype=='I')+sum(modelT.vtype=='C') == length(modelT.obj));
 modelT.vtype = [repelem('C',length(model.obj)),'C'];
-modelT.lb = [modelT.lb;0];
+modelT.lb = [modelT.lb;-1];
 modelT.ub = [modelT.ub;inf];
 % Lower and Upper bounds are already treated in getEnlargedModel
 modelT.rhs = modelT.rhs-0.5*beta;

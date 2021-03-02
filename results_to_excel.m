@@ -1,4 +1,5 @@
-writetable(struct2table(overall_results(1)),'test.xlsx','WriteMode','overwrite')
-for i=2:length(overall_results)
-    writetable(struct2table(overall_results(i)),'test.xlsx','WriteMode','Append')
+writetable(struct2table(result),'overall_results.xlsx','WriteMode','overwrite')
+for i=2:3
+    load(strcat('overall_results2_',string(i),'.mat'))
+    writetable(struct2table(result),'overall_results.xlsx','WriteMode','Append')
 end

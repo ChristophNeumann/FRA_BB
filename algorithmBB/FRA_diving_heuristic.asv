@@ -1,0 +1,8 @@
+function [objVal,time] = FRA_diving_heuristic(model, mode)
+%FRA_DIVING_HEURISTIC Summary of this function goes here
+%   Detailed explanation goes here
+[xyFeasible, fixedIndices, fixingValues, alpha, sumSuffCond, time] = 
+
+
+end
+

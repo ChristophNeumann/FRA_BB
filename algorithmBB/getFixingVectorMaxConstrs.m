@@ -1,4 +1,4 @@
-function boolVectFixedVariables = getFixingVectorMaxConstrs(y, yCheck, originalModel, activeConstraints, k)
+function [boolVectFixedVariables,suff_cond_succ] = getFixingVectorMaxConstrs(y, yCheck, originalModel, activeConstraints, k)
 eps = 10^-4;
 B = originalModel.A(:,originalModel.vtype=='I');
 B = B(activeConstraints,:);
@@ -28,5 +28,6 @@ for i=1:k
     end
 end
 fprintf('number of affected rows is %i of %i \n',[affected_rows_sum,sum(activeConstraints)]);
+suff_cond_succ = (affected_rows_sum==sum(activeConstraints));
 boolVectFixedVariables = indicesToBooleanVector(index,originalModel);
 end

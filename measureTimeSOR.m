@@ -9,7 +9,7 @@ interestingIndices = find(any(time>10,2));
 mode = {'MC','RANDOM'};
 result = [];
 indicator_constrs = [];
-for i = 1:length(interestingIndices)
+for i = 2:length(interestingIndices)
     fprintf('############################# \n');
     fprintf('Iteration %i\n',i);
     current_name = gurobiResults(interestingIndices(i)).name; %testinstances{i}; 
@@ -24,7 +24,8 @@ for i = 1:length(interestingIndices)
         else
             mode = 'RANDOM';
         end
-        [time,objective] = FRA_diving_heuristic(currentmodel,mode);
+        [objective,time] = FRA_diving_heuristic(currentmodel,mode);
+        current_result.objective = objective; current_result.time = time;
     end
     result = [result;current_result];
     save('comp_gurobi','result');

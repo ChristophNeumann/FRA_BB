@@ -1,4 +1,4 @@
-function [objVal,runtime] = fixAndOptimize(model,pointT)
+function [newPoint,objVal,runtime] = fixAndOptimize(model,pointT)
 %FIX_AND_OPTIMIZE Summary of this function goes here
 %   Detailed explanation goes here
 indInt = [find(model.vtype=='I'), find(model.vtype=='B')];

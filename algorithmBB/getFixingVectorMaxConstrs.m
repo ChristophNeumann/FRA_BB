@@ -22,12 +22,12 @@ for i=1:k
         [values2,index2] = maxk(freedomMeasureRemainingInstances, min(k,n)-sum(index~=0)+1);
         ub_index = min(k,n);
         index(i:ub_index)=index2;
-        fprintf('Maximum and Minimum effect of second fixing are %.2f, %.2f\n',full([max(values2),min(values2)]));    
-        fprintf('Number of constraints that is added via max freedom is %i of %i \n',[length(index2),k]); 
+%        fprintf('Maximum and Minimum effect of second fixing are %.2f, %.2f\n',full([max(values2),min(values2)]));    
+%        fprintf('Number of constraints that is added via max freedom is %i of %i \n',[length(index2),k]); 
         break;
     end
 end
-fprintf('number of affected rows is %i of %i \n',[affected_rows_sum,sum(activeConstraints)]);
+%fprintf('number of affected rows is %i of %i \n',[affected_rows_sum,sum(activeConstraints)]);
 suff_cond_succ = (affected_rows_sum==sum(activeConstraints));
 boolVectFixedVariables = indicesToBooleanVector(index,originalModel);
 end

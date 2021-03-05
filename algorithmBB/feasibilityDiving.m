@@ -1,4 +1,4 @@
-function [xyFeasible, fixedIndices, fixingValues, alpha, sumSuffCond, time] = feasibilityDiving(originalModel,mode)
+function [xyFeasible, fixedIndices, fixingValues, alpha, iter, time] = feasibilityDiving(originalModel,mode)
 %OPTIMALITYDIVING Summary of this function goes here
 %   Detailed explanation goes here
 maxIter = 30;
@@ -12,7 +12,7 @@ fixedIndices = [];
 m = sum((reducedModel.vtype)=='I');
 mn = length(reducedModel.vtype);
 k = floor(m/maxIter-(10^-4)) + 1; %+1?
-i = 0;
+iter = 1;
 indexMap = 1:mn;
 xyFeasible = nan;
 yCheck = zeros(m,1);
@@ -33,11 +33,11 @@ while alpha>0 && length(yCheck)>k %&& i<maxIter
         [boolVectFixedVars, suffCondi] = getFixingVectorMaxConstrs(y, yCheck,reducedModel,activeConstraints,k);
         sumSuffCond = sumSuffCond + suffCondi;
     elseif strcmp(mode,'RANDOM')
-    boolVectFixedVars = getRandomFixingVector(yCheck, reducedModel,k, randStream);
+        boolVectFixedVars = getRandomFixingVector(yCheck, reducedModel,k, randStream);
     else
-        boolVectFixedVars = getFixingVector(y, yCheck,reducedModel,activeConstraints,k);
+        boolVectFixedVars = getRandomFixingVector(yCheck, reducedModel,k, randStream);
+        warning('Mode %s must be either MC or RANDOM. Using RANDOM instead.',mode);
     end
-    
     numberOfFixings = length(indexMap(boolVectFixedVars));
     fixedIndices = [fixedIndices;reshape(indexMap(boolVectFixedVars),[numberOfFixings,1])];
     fixingValues = [fixingValues;xycheck(boolVectFixedVars)];
@@ -46,8 +46,8 @@ while alpha>0 && length(yCheck)>k %&& i<maxIter
     resultRLOR = RLOR(reducedModel);  
     alpha = resultRLOR.objval;
     time = time + resultRLOR.runtime;
-    fprintf('current alpha value is: %i\n',alpha);
-    i = i + 1;
+%    fprintf('current alpha value is: %i\n',alpha);
+    iter = iter + 1;
 end
 boolVectFixedIndices = indicesToBooleanVector(fixedIndices,originalModel,false);
 [~,order] = sort(fixedIndices);
@@ -60,7 +60,7 @@ if alpha <= 0
     xycheckLast = getRounding(resultRLOR.x(1:end-1),reducedModel);
     xyFeasible = inflateReducedPoint(xycheckLast,fixedIndices,fixingValues);
     assert(isfeasible(xyFeasible,originalModel));
-    fprintf('Diving successful\n');
+    fprintf('Diving successful at depth %i\n',length(fixedIndices));
 elseif ~isnan(xyFeasible)
     assert(isfeasible(xyFeasible,originalModel));
     fprintf('Found a feasible point but fixed problem is not granular \n');

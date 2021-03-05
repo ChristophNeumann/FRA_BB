@@ -25,9 +25,10 @@ for i = 2:length(interestingIndices)
             mode = 'RANDOM';
         end
         [objective,time] = FRA_diving_heuristic(currentmodel,mode);
-        current_result.objective = objective; current_result.time = time;
+        current_result.(strcat(mode,'obj')) = objective; 
+        current_result.(strcat(mode,'time')) = time;
     end
     result = [result;current_result];
-    save('comp_gurobi','result');
+    save('compTimeSOR','result');
 end
 %end

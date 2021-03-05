@@ -17,7 +17,7 @@ for i = 699:length(testinstances)
     currentmodel = preProcessModel(currentmodel);
     objcon = 0;
     if isfield(currentmodel,'genconind')
-        indicator_constrs = [indicator_constrs,current_name];
+        indicator_constrs = [indicator_constrs,strcat(' ',current_name)];
         fprintf('contains indicator constraints\n');
     end    
     if(~(containsEqualitiesOnInt(currentmodel)) && ~(isfield(currentmodel,'genconind')))

@@ -27,7 +27,7 @@ while toc < 20 && i <= size(B_l,1)
         i = i+1;
 end
 if toc >=20 
-    fprintf('Could not enlarge problem fully');
+    fprintf('Could not enlarge problem fully.\n');
 end
 %fprintf('maximum enlargement: %i \n',max(k))
 enlargedModel.rhs(I_enlarged) = model.rhs(I_enlarged)...

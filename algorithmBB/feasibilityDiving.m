@@ -11,7 +11,7 @@ fixingValues = [];
 fixedIndices = [];
 m = sum((reducedModel.vtype)=='I');
 mn = length(reducedModel.vtype);
-k = floor(m/maxIter-(10^-4)) + 1; %+1?
+k = ceil(m/maxIter); %+1?
 iter = 1;
 indexMap = 1:mn;
 xyFeasible = nan;

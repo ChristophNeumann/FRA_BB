@@ -1,16 +1,17 @@
 clear all;
 pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection\';
 addpath(pathname);
-testinstances = dir(strcat(pathname,'/*.mps'));
+%testinstances = dir(strcat(pathname,'/*.mps'));
+testinstances = textread('testset.txt', "%s"); 
 mode = {'MC','RANDOM'};
 result = [];
 indicator_constrs = [];
 for i = 1:length(testinstances)
     fprintf('############################# \n');
     fprintf('Iteration %i\n',i);
-    current_name = testinstances(i).name; %testinstances{i}; 
+    current_name = testinstances{i}; %testinstances(i).name; %
     fprintf('Testing model %s \n', current_name);
-    path = strcat(pathname,current_name);%,'.mps'
+    path = strcat(pathname,current_name,'.mps');%,
     currentmodel = gurobi_read(path);
     currentmodel = preProcessModel(currentmodel);
     objcon = 0;

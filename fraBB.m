@@ -1,13 +1,13 @@
 clear all;
 pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\miplib2010\';
-pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection\';
+pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection_large\';
 addpath(pathname);
 testinstances = dir(strcat(pathname,'/*.mps'));
 %testinstances = textread('testset2.txt', "%s");
 mode = {'MC','RANDOM'};
 result = [];
 indicator_constrs = [];
-for i = 699:length(testinstances)
+for i = 7:length(testinstances)
     fprintf('############################# \n');
     fprintf('Iteration %i\n',i);
     current_name = testinstances(i).name; %testinstances{i}; 

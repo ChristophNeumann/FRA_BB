@@ -1,13 +1,13 @@
 clear all;
 pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\miplib2010\';
-pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection_large\';
+pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection\';
 addpath(pathname);
 testinstances = dir(strcat(pathname,'/*.mps'));
 %testinstances = textread('testset2.txt', "%s");
 mode = {'MC','RANDOM'};
 result = [];
 indicator_constrs = [];
-for i = 7:length(testinstances)
+for i = 5:length(testinstances)
     fprintf('############################# \n');
     fprintf('Iteration %i\n',i);
     current_name = testinstances(i).name; %testinstances{i}; 
@@ -36,10 +36,12 @@ for i = 7:length(testinstances)
             v_0 = resultSOR.objval;
             xy_s = getRounding(resultSOR.x,currentmodel);
             current_result.vCheck0 = transpose(xy_s)*currentmodel.obj + objcon;
-            current_result.vCheck0PP = fixAndOptimize(currentmodel,xy_s) + objcon;
+            [~,vCheck0PP,~] = fixAndOptimize(currentmodel,xy_s);
+            current_result.vCheck0PP = vCheck0PP + objcon;
         elseif isfeasible(xy_root_node,currentmodel)
             current_result.vCheck0 = transpose(currentmodel.obj)*xy_root_node + objcon;
-            current_result.vCheck0PP = fixAndOptimize(currentmodel,xy_root_node) + objcon;
+            [~,vCheck0PP,~] = fixAndOptimize(currentmodel,xy_root_node);
+            current_result.vCheck0PP = vCheck0PP + objcon;
         else
             current_result.vCheck0 = inf; current_result.vCheck0PP = inf;           
         end      
@@ -55,12 +57,14 @@ for i = 7:length(testinstances)
             current_result.(strcat(current_mode,+'_objValPP')) = inf;
             if ~isnan(point)
                 current_result.(strcat(current_mode,+'_objVal')) = transpose(currentmodel.obj)*point + objcon;
-                current_result.(strcat(current_mode,+'_objValPP')) = fixAndOptimize(currentmodel,point)+ objcon;
+                [~,vCheckPP,~] = fixAndOptimize(currentmodel,point);
+                current_result.(strcat(current_mode,+'_objValPP')) = vCheckPP + objcon;
             end
             if alpha <= 0
                 [xyMinimal, depth, v_check, v_s, sumSuffCond_OD] = optimalityDiving(currentmodel,current_mode, indices, values);
                 current_result.(strcat(current_mode,'_objVal')) = v_check + objcon;
-                current_result.(strcat(current_mode,+'_objValPP')) = fixAndOptimize(currentmodel,xyMinimal)+ objcon;
+                [~,vCheckPP,~] = fixAndOptimize(currentmodel,xyMinimal);
+                current_result.(strcat(current_mode,+'_objValPP')) = vCheckPP + objcon;
             end
             if strcmp(current_mode,'MC')
                current_result.sumSuffCond= sumSuffCond;

@@ -14,10 +14,17 @@ params.outputflag = 0;
 resFixAndOptimize = gurobi(fixedModel,params);
 runtime = resFixAndOptimize.runtime;
 
-newPoint = zeros(length(pointT),1);
-newPoint(indInt) = pointT(indInt);
-newPoint(indCon) = resFixAndOptimize.x;
-objVal = model.obj'*newPoint;
-assert(isfeasible(newPoint,model)==1);
+if strcmp(resFixAndOptimize.status,'OPTIMAL')
+    newPoint = zeros(length(pointT),1);
+    newPoint(indInt) = pointT(indInt);
+    newPoint(indCon) = resFixAndOptimize.x;
+    objVal = model.obj'*newPoint;
+    assert(isfeasible(newPoint,model)==1);
+else
+    fprintf(strcat('fixandoptimize resulted in the following solver message,' ... 
+        ,resFixAndOptimize.status,'\n'));      
+    newPoint = pointT;
+    objVal = model.obj'*pointT;
+end
 end
 

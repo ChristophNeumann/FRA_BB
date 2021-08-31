@@ -1,12 +1,13 @@
 clear all;
-pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection\';
+pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection_original\';
 addpath(pathname);
 testinstances = dir(strcat(pathname,'/*.mps'));
 %testinstances = textread('testset.txt', "%s"); 
 mode = {'MC','RANDOM'};
 result = [];
 indicator_constrs = [];
-for i = 1:length(testinstances)
+starting_problem = 870;%751;
+for i = starting_problem:length(testinstances)
     fprintf('############################# \n');
     fprintf('Iteration %i\n',i);
     current_name = testinstances(i).name; %testinstances{i}; %
@@ -46,6 +47,7 @@ for i = 1:length(testinstances)
             currentResult.(strcat(mode,'objGurobi')) = objval;
         end
     result = [result;currentResult];
-    save('compResults','result');
+    save(strcat('compResults',num2str(starting_problem)),'result');
+    save(strcat('indicator_constrs',num2str(starting_problem)),'indicator_constrs');
     end
 end

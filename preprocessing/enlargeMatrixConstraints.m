@@ -11,7 +11,7 @@ B = model.A(:,model.vtype=='I');
 %Due to memory reasons, the integegrality of B has to be tested separately
 %rows with nonzero elements of B-floor(B) cannot be relaxed
 I_enlarged = ~any(A,2) & ~any(abs(B-round(B))>epsRound,2)& ...
-             ~isinf(enlargedModel.rhs);
+             ~isinf(enlargedModel.rhs) & ~model.sense=='=';
 B_l = round(B(I_enlarged,:));
 enlargedModel.A(I_enlarged,model.vtype=='I') = B_l;
 %[I,~] = find(B_l-floor(spfun(@(x) x+eps,B_l))>eps);

@@ -1,0 +1,13 @@
+function feas = isfeasible(x,model)
+%Überprüft, ob Punkt die Restirkionen von erfüllt
+intInf = any(abs(x(model.vtype=='I')-round(x(model.vtype=='I')))>+1e-6);
+binInf = any(abs(x(model.vtype=='B')-round(x(model.vtype=='B')))>+1e-6);
+leqInf = any(model.A(model.sense=='<',:)*x>(model.rhs(model.sense=='<')+1e-6));
+geqInf = any(model.A(model.sense=='>',:)*x<(model.rhs(model.sense=='>')-1e-6));
+eqInf = ~all(model.A(model.sense=='=',:)*x<=model.rhs(model.sense=='=')+1e-6) || ~all(model.A(model.sense=='=',:)*x>=model.rhs(model.sense=='=')-1e-6); 
+boundInf = (any(x>model.ub+1e-6) | any(x<model.lb-1e-6));
+if intInf || binInf || leqInf ||geqInf || boundInf || eqInf
+    feas = false;
+else
+    feas = true;
+end

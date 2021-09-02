@@ -6,7 +6,7 @@ testinstances = dir(strcat(pathname,'/*.mps'));
 mode = {'MC','RANDOM'};
 result = [];
 indicator_constrs = [];
-starting_problem = 5;%751;
+starting_problem = 751;
 for i = starting_problem:length(testinstances)
     fprintf('############################# \n');
     fprintf('Iteration %i\n',i);

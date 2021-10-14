@@ -1,5 +1,5 @@
 clear all;
-pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection_original\';
+%pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection_original\';
 prompt = "pathname to folder where MIPLIB instances are located \n";
 if ~exist('pathname','var')
     pathname = input(prompt,'s');
@@ -37,25 +37,19 @@ for i = starting_problem:length(testinstances)
             current_mode = mode{j};
             [currentResult.granular,currentResult.v0,currentResult.v0PP, ...
                 currentResult.t,currentResult.tpp] = rootNodeFRA(currentmodel);
-            [node_granular, objective,objectivePP, time,iterF, depthO] = ...
-                FRA_diving_heuristic(currentmodel,current_mode);
-            currentResult.(strcat(current_mode,'granular')) = node_granular;
-            currentResult.(strcat(current_mode,'time')) = time;
-            currentResult.(strcat(current_mode,'obj')) = objective; 
-            currentResult.(strcat(current_mode,'objPP')) = objectivePP; 
-            currentResult.(strcat(current_mode,'iterF')) = iterF; 
-            currentResult.(strcat(current_mode,'depthO')) = depthO; 
+            results_diving= FRA_diving_heuristic(currentmodel,current_mode);
+            currentResult = appendResultsDiving(currentResult,current_mode,results_diving);
             time = 0; objval = inf;
             if COMPARE_AGAINST_GUROBI
-                if objective < inf
-                 [time, objval] = runGurobi(currentmodel,objective);
+                if results_diving.objVal < inf
+                 [time, objval] = runGurobi(currentmodel,results_diving.objVal);
                 end
                 currentResult.(strcat(current_mode,'timeGurobi'))= time;
                 currentResult.(strcat(current_mode,'objGurobi')) = objval;
             end
         end
     result = [result;currentResult];
-    save(strcat('compResults',num2str(starting_problem)),'result');
-    save(strcat('indicator_constrs',num2str(starting_problem)),'indicator_constrs');
+    save(strcat('results/compResults',num2str(starting_problem)),'result');
+    save(strcat('results/indicator_constrs',num2str(starting_problem)),'indicator_constrs');
     end
 end

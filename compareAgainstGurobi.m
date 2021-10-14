@@ -1,10 +1,17 @@
 clear all;
-%pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection_original\';
+pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection_original\';
 prompt = "pathname to folder where MIPLIB instances are located \n";
-pathname = input(prompt,'s');
+if ~exist('pathname','var')
+    pathname = input(prompt,'s');
+end
+prompt = "Do you want to run Gurobi as a comparison? Answer {0,1}\n";
+COMPARE_AGAINST_GUROBI = input(prompt);
+while (COMPARE_AGAINST_GUROBI ~= 0) && (COMPARE_AGAINST_GUROBI~=1)
+    prompt = "Valid input must be 0 or 1.\n";
+    COMPARE_AGAINST_GUROBI = input(prompt);
+end
 addpath(pathname);
 testinstances = dir(strcat(pathname,'/*.mps'));
-COMPARE_AGAINST_GUROBI = 0;
 %testinstances = textread('testset.txt', "%s"); 
 mode = {'MC','RANDOM'};
 result = [];
@@ -26,29 +33,25 @@ for i = starting_problem:length(testinstances)
     if(~(containsEqualitiesOnInt(currentmodel)) && ~(isfield(currentmodel,'genconind')))
         currentResult = struct;
         currentResult.name = current_name;
-        for j=1:2
-            if j==1
-                mode = 'MC';
-            else
-                mode = 'RANDOM';
-            end
+        for j=1:length(mode)
+            current_mode = mode{j};
             [currentResult.granular,currentResult.v0,currentResult.v0PP, ...
                 currentResult.t,currentResult.tpp] = rootNodeFRA(currentmodel);
             [node_granular, objective,objectivePP, time,iterF, depthO] = ...
-                FRA_diving_heuristic(currentmodel,mode);
-            currentResult.(strcat(mode,'granular')) = node_granular;
-            currentResult.(strcat(mode,'time')) = time;
-            currentResult.(strcat(mode,'obj')) = objective; 
-            currentResult.(strcat(mode,'objPP')) = objectivePP; 
-            currentResult.(strcat(mode,'iterF')) = iterF; 
-            currentResult.(strcat(mode,'depthO')) = depthO; 
+                FRA_diving_heuristic(currentmodel,current_mode);
+            currentResult.(strcat(current_mode,'granular')) = node_granular;
+            currentResult.(strcat(current_mode,'time')) = time;
+            currentResult.(strcat(current_mode,'obj')) = objective; 
+            currentResult.(strcat(current_mode,'objPP')) = objectivePP; 
+            currentResult.(strcat(current_mode,'iterF')) = iterF; 
+            currentResult.(strcat(current_mode,'depthO')) = depthO; 
             time = 0; objval = inf;
             if COMPARE_AGAINST_GUROBI
                 if objective < inf
                  [time, objval] = runGurobi(currentmodel,objective);
                 end
-                currentResult.(strcat(mode,'timeGurobi'))= time;
-                currentResult.(strcat(mode,'objGurobi')) = objval;
+                currentResult.(strcat(current_mode,'timeGurobi'))= time;
+                currentResult.(strcat(current_mode,'objGurobi')) = objval;
             end
         end
     result = [result;currentResult];

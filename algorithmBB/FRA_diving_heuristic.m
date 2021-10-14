@@ -1,6 +1,18 @@
-function diving_output = FRA_diving_heuristic(model, mode)
-%FRA_DIVING_HEURISTIC Summary of this function goes here
-%   Detailed explanation goes here
+function diving_output = FRA_diving_heuristic(model, params)
+%FRA_DIVING_HEURISTIC Implements the feasible rounding approaches diving
+%heuristic. Initially runs feasiblility diving and then optimality diving.
+%Mode can be 'RA' (random) or 'MC'(greedy), where maxIter is fixed within
+%the individual diving methods.
+if ~isfield(params,'mode')
+    fprintf('WARNING: SETTING MODE TO RANDOM');
+    params.mode = 'RA';
+end
+if ~isfield(params,'maxIter')
+    fprintf('WARNING: SETTING maxIter TO 30');
+    params.maxIter = 30;
+end
+
+
 model = preProcessModel(model);
 depth0 = 0; 
 objValPP = inf;
@@ -11,7 +23,7 @@ else
     objCon = model.objcon;
 end
 fprintf('Running Feasibility diving\n');
-[xyFeasible, fixedIndices, fixingValues, alpha, iterF, timeFD] = feasibilityDiving(model,mode);
+[xyFeasible, fixedIndices, fixingValues, alpha, iterF, timeFD] = feasibilityDiving(model,params);
 time = timeFD;
 if isnan(xyFeasible)
    objVal = inf;
@@ -20,7 +32,7 @@ elseif alpha>0
 else
     fprintf('Running Optimality diving\n');
     node_granular = true;
-    [~, depth0, v_check, v_pp, ~, timeOD] = optimalityDiving(model,mode,fixedIndices,fixingValues);
+    [~, depth0, v_check, v_pp, ~, timeOD] = optimalityDiving(model,params,fixedIndices,fixingValues);
     time = time+timeOD;
     objVal = v_check + objCon;
     objValPP = v_pp + objCon;

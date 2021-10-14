@@ -1,13 +1,10 @@
 function [xyFeasible, fixedIndices, fixingValues, alpha, iter, time] = feasibilityDiving(originalModel,params)
 
 %feasibilityDiving Implements feasibility diving of feasible rounding
-%appraoches for a given model. 
-%params include a field "mode"-'RA' (random) or 'MC'(greedy) 
-%and a field maxIter which determines the number of fixings per iteration.
-
+%appraoches for a given model. Mode can be 'RA' (random) or 'MC'(greedy), 
+%where maxIter is fixed to 30.
 mode = params.mode;
-maxIter = params.maxIter;
-
+maxIter = par30;
 sumSuffCond = 0;
 reducedModel = preProcessModel(originalModel);
 resultRLOR = RLOR(reducedModel);

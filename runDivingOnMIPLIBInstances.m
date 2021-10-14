@@ -1,5 +1,10 @@
 clear all;
-%pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection_original\';
+%%%Algorithm settings:
+COMPARE_AGAINST_GUROBI = 1;
+params.maxIter = 30;
+
+%%%Script settings:
+pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection_original\';
 prompt = "pathname to folder where MIPLIB instances are located \n";
 if ~exist('pathname','var')
     pathname = input(prompt,'s');
@@ -12,7 +17,6 @@ while (COMPARE_AGAINST_GUROBI ~= 0) && (COMPARE_AGAINST_GUROBI~=1)
 end
 addpath(pathname);
 testinstances = dir(strcat(pathname,'/*.mps'));
-%testinstances = textread('testset.txt', "%s"); 
 mode = {'MC','RANDOM'};
 result = [];
 indicator_constrs = [];
@@ -20,9 +24,9 @@ starting_problem = 1;
 for i = starting_problem:length(testinstances)
     fprintf('############################# \n');
     fprintf('Iteration %i\n',i);
-    current_name = testinstances(i).name; %testinstances{i}; %
+    current_name = testinstances(i).name; 
     fprintf('Testing model %s \n', current_name);
-    path = strcat(pathname,current_name);%,,'.mps'
+    path = strcat(pathname,current_name);
     currentmodel = gurobi_read(path);
     currentmodel = preProcessModel(currentmodel);
     objcon = 0;
@@ -34,11 +38,11 @@ for i = starting_problem:length(testinstances)
         currentResult = struct;
         currentResult.name = current_name;
         for j=1:length(mode)
-            current_mode = mode{j};
+            params.mode = mode{j};
             [currentResult.granular,currentResult.v0,currentResult.v0PP, ...
                 currentResult.t,currentResult.tpp] = rootNodeFRA(currentmodel);
-            results_diving= FRA_diving_heuristic(currentmodel,current_mode);
-            currentResult = appendResultsDiving(currentResult,current_mode,results_diving);
+            results_diving= FRA_diving_heuristic(currentmodel,params);
+            currentResult = appendResultsDiving(currentResult,params.mode,results_diving);
             time = 0; objval = inf;
             if COMPARE_AGAINST_GUROBI
                 if results_diving.objVal < inf

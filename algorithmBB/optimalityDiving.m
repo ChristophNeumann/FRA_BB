@@ -1,4 +1,4 @@
-function [xyMinimal, depth, v_check, v_pp, sumSuffCond, time] = optimalityDiving(originalModel, mode, fI, fV)
+function [xyMinimal, depth, v_check, v_pp, sumSuffCond, time] = optimalityDiving(originalModel, params, fI, fV)
 %OPTIMALITYDIVING Summary of this function goes here
 %   Detailed explanation goes here
 switch nargin
@@ -36,7 +36,9 @@ switch nargin
 end
 
 depth = length(fixedIndices);
-maxIter = 30;
+maxIter = params.maxIter;
+mode = params.mode;
+
 v_check = inf;
 v_pp = inf;
 sumSuffCond = 0;

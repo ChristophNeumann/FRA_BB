@@ -7,5 +7,5 @@ model.vtype = 'ICII';
 model.sense = transpose(repelem('<',3));
 [xyFeasible, fI, fV, alpha] = feasibilityDiving(model, 'MC');
 xyMinimal = optimalityDiving(model,'MC', fI, fV);
-xyFeasible
-xyMinimal
+assert(all(xyFeasible==xyMinimal));
+fprintf("Test passed for testproblem from paper\n"); 

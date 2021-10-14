@@ -16,7 +16,7 @@ for j = 1:2
         path2 = strcat(pathname2,current_name);%,'.mps'
  %       if isfile(path1)
  %           currentmodel = gurobi_read(path1);
-  %      elseif isfile(path2)
+ %      elseif isfile(path2)
         currentmodel = gurobi_read(strcat(path2));
  %       end
         fprintf('model %s \n', current_name);

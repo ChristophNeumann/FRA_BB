@@ -1,7 +1,5 @@
 clear all;
-%pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection_original\';
-prompt = "pathname to folder where MIPLIB instances are located \n";
-pathname = input(prompt,'s');
+pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection_original\';
 addpath(pathname);
 testinstances = dir(strcat(pathname,'/*.mps'));
 COMPARE_AGAINST_GUROBI = 0;
@@ -9,7 +7,7 @@ COMPARE_AGAINST_GUROBI = 0;
 mode = {'MC','RANDOM'};
 result = [];
 indicator_constrs = [];
-starting_problem = 1;
+starting_problem = 751;
 for i = starting_problem:length(testinstances)
     fprintf('############################# \n');
     fprintf('Iteration %i\n',i);

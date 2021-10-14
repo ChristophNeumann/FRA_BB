@@ -5,12 +5,15 @@ params.maxIter = 30;
 
 %%%Script settings:
 pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection_original\';
-prompt = "pathname to folder where MIPLIB instances are located \n";
+
 if ~exist('pathname','var')
+    prompt = "pathname to folder where MIPLIB instances are located \n";
     pathname = input(prompt,'s');
 end
+if ~exist('COMPARE_AGAINST_GUROBI','var')
 prompt = "Do you want to run Gurobi as a comparison? Answer {0,1}\n";
 COMPARE_AGAINST_GUROBI = input(prompt);
+end
 while (COMPARE_AGAINST_GUROBI ~= 0) && (COMPARE_AGAINST_GUROBI~=1)
     prompt = "Valid input must be 0 or 1.\n";
     COMPARE_AGAINST_GUROBI = input(prompt);

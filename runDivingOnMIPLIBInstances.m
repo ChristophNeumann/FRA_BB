@@ -5,7 +5,7 @@ params.maxIter = 30;
 mode = {'MC','RANDOM'};
 
 %%%Script settings:
-pathname = '\\ior-kop-psi.ior.kit.edu\data\hg2412\Research\miplib\collection_original\';
+%pathname = path-to-folder-with-MIPLIB-instances
 
 if ~exist('pathname','var')
     prompt = "pathname to folder where MIPLIB instances are located \n";

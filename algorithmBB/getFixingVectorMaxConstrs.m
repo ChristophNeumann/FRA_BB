@@ -1,4 +1,8 @@
-function [boolVectFixedVariables,suff_cond_succ] = getFixingVectorMaxConstrs(y, yCheck, originalModel, activeConstraints, k)
+function [boolVectFixedVariables,suff_cond_succ] =  ...
+getFixingVectorMaxConstrs(y, yCheck, originalModel, activeConstraints, k)
+%%%Returns the boolean vector of indices to be fixed according to the
+%%%greedy method.
+
 eps = 10^-4;
 B = originalModel.A(:,originalModel.vtype=='I');
 B = B(activeConstraints,:);

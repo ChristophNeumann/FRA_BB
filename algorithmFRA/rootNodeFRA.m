@@ -1,4 +1,4 @@
-function [granular,vCheck0,vCheck0PP,time,timePP] = rootNodeFRA(currentmodel)
+function resultsRootNode = rootNodeFRA(currentmodel)
 %ROOTNODEFRA Summary of this function goes here
 %   Detailed explanation goes here
 if isfield(currentmodel,'objcon')
@@ -25,5 +25,12 @@ elseif isfeasible(xy_root_node,currentmodel)
 else
     vCheck0 = inf; vCheck0PP = inf; timePP=0;
 end      
+
+resultsRootNode.granular = granular;
+resultsRootNode.vCheck0 = vCheck0;
+resultsRootNode.vCheck0PP = vCheck0PP;
+resultsRootNode.time = time;
+resultsRootNode.timePP = timePP;
+
 end
 

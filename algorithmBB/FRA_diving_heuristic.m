@@ -1,4 +1,4 @@
-function diving_output = FRA_diving_heuristic(model, params)
+function divingOutput = FRA_diving_heuristic(model, params)
 %FRA_DIVING_HEURISTIC Implements the feasible rounding approaches diving
 %heuristic. Initially runs feasiblility diving and then optimality diving.
 %Mode can be 'RA' (random) or 'MC'(greedy), where maxIter is fixed within
@@ -32,16 +32,17 @@ elseif alpha>0
 else
     fprintf('Running Optimality diving\n');
     node_granular = true;
-    [~, depth0, v_check, v_pp, ~, timeOD] = optimalityDiving(model,params,fixedIndices,fixingValues);
+    [xyFeasible, depth0, v_check, v_pp, ~, timeOD] = optimalityDiving(model,params,fixedIndices,fixingValues);
     time = time+timeOD;
     objVal = v_check + objCon;
     objValPP = v_pp + objCon;
 end
-diving_output.node_granular = node_granular;
-diving_output.objVal = objVal;
-diving_output.objValPP = objValPP;
-diving_output.time = time;
-diving_output.iterF = iterF;
-diving_output.depth0 = depth0;
+divingOutput.node_granular = node_granular;
+divingOutput.objVal = objVal;
+divingOutput.objValPP = objValPP;
+divingOutput.time = time;
+divingOutput.iterF = iterF;
+divingOutput.depth0 = depth0;
+divingOutput.xy = xyFeasible;
 end
 

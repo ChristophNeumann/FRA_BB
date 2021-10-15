@@ -58,15 +58,15 @@ for i = starting_problem:length(testinstances)
                 if resultsDiving.objVal < inf
                  [time, objval] = runGurobi(currentmodel,resultsDiving.objVal);
                 end
-                currentResult.(strcat(current_mode,'timeGurobi'))= time;
-                currentResult.(strcat(current_mode,'objGurobi')) = objval;
+                currentResult.(strcat(params.mode,'timeGurobi'))= time;
+                currentResult.(strcat(params.mode,'objGurobi')) = objval;
             end
             
         end
         
     result = [result;currentResult];
-    save(strcat('results/compResults',num2str(starting_problem)),'result');
-    save(strcat('results/indicator_constrs',num2str(starting_problem)),'indicator_constrs');
+    save(strcat('rawResults/compResults',num2str(starting_problem)),'result');
+    save(strcat('rawResults/indicator_constrs',num2str(starting_problem)),'indicator_constrs');
     
     end
 end

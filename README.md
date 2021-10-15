@@ -12,7 +12,6 @@ It makes use of so-called inner parallel sets (IPS) of the original feasible set
 ## General info
 This project is a prototype of objective-IPS-diving and feasibility-IPS-diving that can be applied to Pyomo models. It is mainly intended for researchers to experiment and compare computational results on their MICP instances and to enable an easy reproducibility of the computational results of the above article. 
 
-As a gerenal note, under a Gams license, you may convert any (other) Gams-model to a Pyomo model and then apply the IPCP. This process is described [here](https://www.gams.com/latest/docs/S_CONVERT.html). 
 
 ## Setup
 The method has been tested under Matlab R2020a. For solving the sub-LPs it uses Gurobi as LP-solver which needs to be installed. 

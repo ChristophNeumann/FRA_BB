@@ -72,7 +72,7 @@ This example is contained in the script `exampleDiving.m`.
 
 ## Reproducing the experiments
 
-The computational experiments from  [Feasible rounding approaches and diving strategies in branch-and-bound methods for mixed-integer optimization](http://www.optimization-online.org/DB_HTML/2021/10/8630.html) may be reproduced by running the scripts 
+The computational experiments from Section 5.2 in [Feasible rounding approaches and diving strategies in branch-and-bound methods for mixed-integer optimization](http://www.optimization-online.org/DB_HTML/2021/10/8630.html) may be reproduced by running the scripts 
 
 ```
 runDivingOnMIPLIBInstances.m
